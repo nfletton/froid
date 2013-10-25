@@ -63,7 +63,7 @@ class TestRoutingFunctions(unittest.TestCase):
 
     def test_raw_document_route(self):
         """
-        Route to raw document
+        Route to raw document i.e. non-HTML
         """
         response = self.app.get('/rawfiles/raw.pdf')
         assert response.status_code == 200
@@ -74,6 +74,13 @@ class TestRoutingFunctions(unittest.TestCase):
         """
         response = self.app.get('/robots.txt')
         assert 'Allow: /' in response.data
+
+    def test_raw_file_not_found_route(self):
+        """
+        Route to non-existent non-HTML file
+        """
+        response = self.app.get('/not-found.txt')
+        assert response.status_code == 404
 
 if __name__ == '__main__':
     unittest.main()
