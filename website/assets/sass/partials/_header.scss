@@ -1,0 +1,59 @@
+header {
+  @include clearfix;
+  @include outer-container;
+}
+
+#logo {
+  margin: 14px 0;
+  @include breakpoint($break690) {
+    margin: 20px 0 40px 0;
+    @include grid-span(3,1);
+  }
+  @include breakpoint($break800, $no-query: '.no-mqs') {
+    margin: 20px 0 20px 0;
+    @include grid-span(6,1);
+  }
+  a {
+    display: block;
+    @include replace-text("logo-small.png",  0, 0);
+    width: 150px;
+    height: 41px;
+    @include breakpoint($break690) {
+      @include replace-text("logo-medium.png",  0, 0);
+      width: 231px;
+      height: 63px;
+    }
+    @include breakpoint($break800, $no-query: '.no-mqs') {
+      @include replace-text("logo-large.png",  0, 0);
+      width: 312px;
+      height: 85px;
+    }
+  }
+}
+
+#search {
+  display: none;
+  overflow: hidden;
+  @include breakpoint($break690, $no-query: '.no-mqs') {
+    @include grid-span(4, 3);
+    clear: right;
+    display: block;
+  }
+  .form-search {
+    float: right;
+    padding: 2px;
+    @include input-field;
+    background-color: #fff;
+  }
+  .search-query {
+    border: none;
+  }
+  .submit {
+    border: none;
+    background-color: white;
+    color: $heading-color;
+    font-size: 80%;
+    border-left: 1px dotted $border-color;
+    padding: 2px 12px 2px 15px;
+  }
+}

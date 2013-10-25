@@ -1,0 +1,12 @@
+{% import '_utils.html' as utils %}
+<nav class="nav-collapse">
+  <div class="container">
+    <ul>
+      {% for menu_item in page.menu('nav-main') %}
+        <li{{ utils.loop_classes(loop.first, loop.last, utils.menu_active(menu_item, page)) }} id={{ menu_item.uid }}>
+        <a href="{{ menu_item.url }}">{{ menu_item.title|safe }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</nav>

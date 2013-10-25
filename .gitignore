@@ -1,6 +1,9 @@
 *.py[cod]
+*.egg-info
 
-public
+# Froid
+/public
+.sass-cache
 
 # Mr Developer
 .mr.developer.cfg

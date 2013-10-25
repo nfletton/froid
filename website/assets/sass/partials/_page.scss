@@ -1,0 +1,292 @@
+/* Home page */
+.index {
+  #news-block {
+    @include breakpoint($break800) {
+      display: none;
+    }
+    @include breakpoint($break960, $no-query: '.no-mqs') {
+      @include grid-span(5, 1);
+      display: block;
+      clear: left;
+    }
+  }
+  #articles-block {
+    @include breakpoint($break800) {
+      @include grid-span(6, 1);
+    }
+    @include breakpoint($break960, $no-query: '.no-mqs') {
+      @include grid-span(5, 1);
+    }
+  }
+  #recipe-block {
+    @include breakpoint($break800) {
+      display: none;
+    }
+    @include breakpoint($break960, $no-query: '.no-mqs') {
+      @include grid-span(6, 19);
+      display: block;
+    }
+  }
+  .content {
+    @include grid-span(1, 1);
+    @include breakpoint($break800) {
+      @include grid-span(24, 1);
+    }
+    @include breakpoint($break960, $no-query: '.no-mqs') {
+      @include grid-span(19, 6);
+      clear: right;
+    }
+  }
+}
+
+
+/* Recipes */
+.recipe-category-list {
+  margin: 0 0 0 60px;
+}
+
+
+.recipe-details {
+  .label {
+    font-weight: bold;
+    color: $heading-color;
+  }
+  .total-time {
+    display: none;
+  }
+  .tag-line {
+    font-style: italic;
+  }
+  .description {
+    clear: both;
+    padding-top: 1px;
+  }
+  .main-image {
+    img {
+      @include image-border-small;
+    }
+  }
+  .allergy-block {
+    h2 {
+      margin: 0 0 rhythm(0.5) 0;
+    }
+  }
+  .summary-block {
+    list-style: none;
+    padding-left: 0;
+  }
+  .measure-btns {
+    font-size: 80%;
+    padding-left: 20px;
+  }
+  .metric-measure,
+  .us-measure {
+    display: none;
+    .bracket {
+      display: none;
+    }
+  }
+  #metric-measures,
+  #us-measures {
+    color: $heading-color;
+    font-weight: normal;
+    &.active {
+      color: $heading-highlight-color;
+      font-weight: bold;
+      border-top: 1px solid $heading-highlight-color;
+      text-decoration: none;
+    }
+  }
+  #metric-measures {
+    margin: 0 3px 0 10px;
+  }
+  #us-measures {
+    margin: 0 10px 0 3px;
+  }
+  .active-measure {
+    display: inline;
+  }
+  .ing-note {
+    margin: rhythm(1) 0;
+    font-weight: bold;
+  }
+
+  @include breakpoint($break690, $no-query: '.no-mqs') {
+    @include layout(16, 0.25) {
+      .main-image {
+        @include grid-span(11, 1);
+        @include clearfix;
+        img {
+          @include image-border-large;
+        }
+      }
+      .allergy-block {
+        @include grid-span(5, 12);
+      }
+      .summary-block {
+        @include grid-span(5, 12);
+        clear: right;
+      }
+    }
+  }
+}
+
+.recipe-item {
+  @include picture-list();
+}
+
+.recipe-list {
+  @include list-ad();
+}
+
+/* Books */
+#books {
+  margin: 20px 0;
+}
+.book {
+  width: 220px;
+  float: left;
+  min-height: 270px;
+  height: 270px;
+  text-align: center;
+  //  border-color: #005E04;
+  //  border-style: solid;
+  margin: 10px 0 20px 10px;
+  //  border-width: 0 0 1px 0;
+  .image {
+    margin: 0 0 10px 0;
+  }
+  .title {
+    margin-top: 3px;
+    font-size: 0.8em;
+  }
+  .author {
+    font-size: 0.8em;
+    margin-bottom: 1em;
+  }
+  .comment {
+    font-size: 0.8em;
+  }
+}
+
+/* Reviews */
+.review-item {
+  @include picture-list();
+}
+
+.review-list {
+  @include list-ad();
+}
+
+.review {
+  .details {
+    @include publishing-details;
+  }
+}
+
+/* Glossary */
+.glossary-list {
+  .status {
+    width: 60px;
+  }
+  .name {
+    padding-right: 2em;
+  }
+  img.tick,
+  img.cross {
+    width: 20px;
+    height: 17px;
+    display: inline;
+    margin-top: 5px;
+  }
+  td {
+    vertical-align: top;
+    padding-bottom: 10px;
+  }
+  .key {
+    list-style-type: none;
+    border: 1px solid #CCCCCC;
+    padding: 5px;
+    width: 50%;
+  }
+}
+
+/* Blog*/
+.blog-list {
+  .details {
+    @include publishing-details;
+  }
+  .read-more {
+    margin-top: -1em;
+    display: block;
+  }
+}
+
+.blog-entry {
+  .details {
+    @include publishing-details;
+  }
+}
+
+
+/* Hygiene Page */
+.hygiene-item {
+  @include clearfix;
+  margin-bottom: rhythm(1);
+  .tag {
+    @include grid-span(4, 1, 24 , .25);
+    clear: left;
+    font-weight: bold;
+    color: $highlight-color;
+    @include breakpoint($break450, $no-query: '.no-mqs') {
+      @include grid-span(4, 2, 24 , .25);
+      clear: left;
+    }
+  }
+  .description {
+    @include grid-span(18, 6, 24 , .25);
+    margin-bottom: rhythm(0.5);
+  }
+}
+
+/* Food Fact */
+.fact-item {
+  @include picture-list();
+}
+
+.fact-list {
+  @include list-ad();
+}
+
+.food-fact {
+  .main-image {
+    img {
+      @include image-border-small;
+    }
+  }
+  h2 {
+    clear: left;
+  }
+}
+
+
+/* News */
+.news-item {
+  .details {
+    @include publishing-details;
+  }
+}
+.news-date {
+  font-weight: normal;
+}
+
+
+/* FAQ */
+.faq-list {
+  h2 {
+    text-transform: capitalize;
+  }
+  h3 a {
+    font-weight: normal;
+  }
+}

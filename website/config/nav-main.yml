@@ -1,0 +1,14 @@
+# NOTE:
+#  1. Ordering of menu items in this file is important
+#  2. Parent menu items must be declared before child menu items
+#  3. The order that menu items are displayed, is the same as the
+#     order of items, at the same level, in this file
+#  4. The parent of top level menu items in this file should be
+#     set to 'root'
+#
+#- ['<unique_id>', '<title>', '<content_path>', '<parent_id>', <visible>, ]
+#
+# LEVEL ONE ITEMS
+#
+menu_items:
+- ['nav-home', 'Home', 'index.yml', 'root', True]

@@ -1,11 +1,86 @@
-<html>
+{% import '_utils.html' as utils %}
+{{ page.before_html|safe -}}
+<!DOCTYPE html>
+<html class="no-js" lang="en">
 <head>
-  <body>
-  <div id="main">
-    {% block layout %}
-    {% endblock layout %}
-  </div>
+  {% block head %}
+  <meta charset="utf-8"/>
 
-  </body>
+  <title>{{ page.title|safe }}</title>
+  <meta name="description" content="{{ page.description|safe }}"/>
+  <meta name="keywords" content="{{ page.keywords|safe }}"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="canonical" href="http://{{ config.DOMAIN + page.url() }}"/>
+  <link rel="alternate" type="application/atom+xml"
+        title="wheat-free.org - Blog posts, news and new content"
+        href="http://www.wheat-free.org/wheat-free-news.xml"/>
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/assets/css/styles.css"/>
+  <link rel="stylesheet" href="/assets/css/paper.css" media="print"/>
+  <script src="/assets/js/modernizr-latest.js"></script>
+  <script>
+    {# Add HTML5 main element to modernizr 2.6.2 - http://drublic.de/blog/add-main-element-modernizr/ #}
+      window.html5.elements = 'main';
+      window.html5.shivDocument(document);
+
+      Modernizr.addTest("mqs", function () {
+        return Modernizr.mq("only all");
+      });
+  </script>
+
+  {% endblock head %}
 </head>
+
+<body class="{{ page.css_classes() }}">
+<header>
+  <div class="container">
+    <div id="logo">
+      <a href="/">{{ config.SITENAME }}</a>
+    </div>
+  </div>
+</header>
+
+{% include '_navbar.html' %}
+
+{% block layout %}
+{% endblock layout %}
+
+<footer>
+  <div class="container">
+    <div id="footer-links">
+      {% include '_footer_menu.html' %}
+      <span id="copyright">&copy;2000 - 2013 xxxx xxxx</span>
+    </div>
+    {% if config.SITE_CREDIT %}
+    <a id="credit" href="{{ config.SITE_CREDIT[1] }}">{{ config.SITE_CREDIT[0] }}</a>
+    {% endif %}
+  </div>
+</footer>
+
+<script>
+  Modernizr.load({
+    test: Modernizr.mq("only all"),
+    yep: '/assets/js/responsive-nav.min.js',
+    callback: function() {
+      var navigation = responsiveNav('.nav-collapse', {
+        transition: 200,
+        insert: "before"
+      });
+    }
+  });
+</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+{% block footer_scripts %}
+{% endblock footer_scripts %}
+{%  block page_analytics %}
+{% include '_analytics.html' %}
+{%  endblock page_analytics %}
+{% block footer_scripts_final %}
+{% endblock footer_scripts_final %}
+</body>
 </html>

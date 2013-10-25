@@ -1,0 +1,47 @@
+.block {
+  margin-bottom: rhythm(1);
+  ul {
+    margin: 0;
+    padding: 0;
+    @include list-chevrons;
+  }
+  li {
+    border-top: $divider-style;
+    padding: 5px 0;
+    &.last {
+      border-bottom: $divider-style;
+    }
+    &:hover {
+      background-color: $list-hover-color;
+    }
+    a {
+      display: block;
+      color: $default-text-color;
+      text-decoration: none;
+    }
+  }
+  h2 {
+    color: $heading-color;
+    margin: 0 0 0.7em 0;
+  }
+  .ad-wrapper {
+    padding: 0;
+  }
+}
+
+/* Block aligments*/
+.block-float-left {
+  float: left;
+  margin: rhythm(0.3) rhythm(1) rhythm(1) 0;
+}
+
+.block-float-right {
+  float: right;
+  margin: rhythm(0.3) 0 rhythm(1) rhythm(1);
+}
+
+.block-float-none {
+  float: none;
+  margin: rhythm(1) 0;
+}
+

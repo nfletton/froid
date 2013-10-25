@@ -1,0 +1,69 @@
+@mixin outer-container() {
+  min-width: $min-width;
+  margin: 0 auto;
+  padding: 0 $default-padding;
+  @include breakpoint($break690) {
+    padding: 0 $break690-padding;
+  }
+  @include breakpoint($break800) {
+    padding: 0 $break800-padding;
+  }
+  @include breakpoint($break1024, $no-query: '.no-mqs') {
+    max-width: $break1024;
+    padding: 0 $break1024-padding;
+  }
+  @include breakpoint($break1100) {
+    max-width: $break1024 +(2 *($break1100-padding - $break1024-padding));
+    padding: 0 $break1100-padding;
+  }
+}
+
+.container {
+  @include clearfix;
+  //@include background-grid;
+}
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  background-color: $page-bg-color;
+}
+
+main {
+  background-color: $content-bg-color;
+  overflow: auto;
+  @include outer-container;
+  padding-bottom: 20px;
+  .container {
+    margin-top: 20px;
+  }
+}
+
+aside {
+  display: none;
+  @include breakpoint($break800, $no-query: '.no-mqs') {
+    @include grid-span(5, 1);
+    display: block;
+  }
+}
+
+#content {
+  @include breakpoint($break800, $no-query: '.no-mqs') {
+    @include grid-span(19, 6);
+  }
+}
+
+#page-bottom-ad {
+  @include outer-container;
+  border-top: $divider-style;
+  text-align: center;
+  background-color: $content-bg-color;
+  .container {
+  }
+}

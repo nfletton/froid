@@ -1,0 +1,23 @@
+{% macro region(region, page, site) %}
+  {% for block in page.blocks(region) %}
+    {% include block %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro loop_classes(is_first, is_last, existing_classes='') %}
+  {% set classes = '' %}
+  {% set classes = classes + (' first' if is_first else '') %}
+  {% set classes = classes + (' last' if is_last else '') %}
+  {% set classes = classes + (' ' + existing_classes if existing_classes else '') %}
+  {% if classes %} class="{{ classes|trim }}"{% endif %}
+{% endmacro %}
+
+{% macro menu_active(menu_item, page) %}
+  {% if menu_item.url in page.active_trail() %}active{% endif %}
+{% endmacro %}
+
+{% macro author_byline(page) %}
+  {% if page.author %}
+    <div class="byline">Author: {{ page.author}}</div>
+  {% endif %}
+{% endmacro %}

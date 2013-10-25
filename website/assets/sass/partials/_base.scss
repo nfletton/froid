@@ -1,0 +1,212 @@
+// Set this to true to force CSS output to exactly match normalize.css.
+$strict-normalize: false !default;
+
+// The default font family.
+$base-font-family: Ubuntu, sans-serif !default;
+
+$base-font-weight: 300;
+
+// The base font size.
+$base-font-size: 14px !default; // Override default set in Compass' Vertical Rhythm partial.
+
+// The base line height determines the basic unit of vertical rhythm.
+$base-line-height: 24px !default; // Override default set in Compass' Vertical Rhythm partial.
+
+// The font sizes for h1-h6.
+$h1-font-size: 2  * $base-font-size !default;
+$h2-font-size: 1.17 * $base-font-size !default;
+$h3-font-size: 1    * $base-font-size !default;
+$h4-font-size: 0.83 * $base-font-size !default;
+$h5-font-size: 0.67 * $base-font-size !default;
+$h6-font-size: 0.60 * $base-font-size !default;
+
+// The amount lists and blockquotes are indented.
+$indent-amount: 40px !default;
+
+// Set this to true to add support for IE 6.
+$legacy-support-for-ie6: false !default; // Override default set in Compass' Support partial.
+
+// Set this to true to add support for IE 7.
+$legacy-support-for-ie7: false !default; // Override default set in Compass' Support partial.
+
+// partials.
+@import "compass/support";
+@import "compass/css3/box-sizing";
+@import "compass/typography/vertical_rhythm";
+@import "compass/typography/text/replacement";
+@import "compass/utilities/sprites";
+@import "singularitygs";
+@import "breakpoint";
+
+// sprites
+//@import "icons/*.png";
+//@include all-icons-sprites;
+
+// grid
+$break450: 450px;
+$break500: 500px;
+$break690: 690px;
+$break800: 800px;
+$break960: 960px;
+$break1024: 1024px;
+$break1100: 1100px;
+
+$default-padding: 10px;
+$break690-padding: 10px;
+$break800-padding: 20px;
+$break1024-padding: 30px;
+$break1100-padding: 50px;
+
+$min-width: 300px;
+
+$grids: 1;
+$grids: add-grid(6 at $break690);
+$grids: add-grid(24 at $break800);
+
+//$gutter-styles: 'split';
+
+$gutters: .03;
+//$gutters: add-gutter(.25 at $break690);
+$gutters: add-gutter(.7 at $break800);
+//$gutters: add-gutter(.25 at $break1024);
+
+$output: 'isolation';
+
+$include-clearfix: true;
+
+// colors
+$page-bg-color: #fff;
+$content-bg-color: #fff;
+$heading-color: #747474;
+$highlight-color: #85ad00;
+$h1-color: $highlight-color;
+$heading-highlight-color: $highlight-color;
+$divider-color: $heading-color;
+$border-color: #959595;
+$input-border-color: $border-color;
+$image-border-color: #DEDEDE;
+$link-color: #840067;
+$active-link-color: $highlight-color;
+$nav-link-color: #404040;
+$nav-active-link-color: #CAE86C;
+$default-text-color: #000;
+$footer-text-color: #444;
+$mobile-nav-hover-color: #D4E7B7;
+$menu-button-color: #B3CB60;
+$list-hover-color: #f2f2f2;
+$social-icon-color: #404040;
+$social-icon-active-color: #ff4800;
+
+
+// dimensions
+$image-border-width: 1px;
+$image-padding: 5px;
+$image-padding-small: 2px;
+
+$divider-style: 1px dotted $border-color;
+
+// media query fallback options
+$breakpoint-no-queries: false;
+$breakpoint-no-query-fallbacks: true;
+
+@font-face {
+  font-family: 'icomoon';
+  src: url('/assets/fonts/icomoon.eot');
+  src: url('/assets/fonts/icomoon.eot?#iefix') format('embedded-opentype'), url('/assets/fonts/icomoon.woff') format('woff'), url('/assets/fonts/icomoon.ttf') format('truetype'), url('/assets/fonts/icomoon.svg#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@mixin image-border-small() {
+  border: $image-border-width solid $image-border-color;
+  padding: $image-padding-small;
+}
+
+@mixin image-border-large() {
+  border: $image-border-width solid $image-border-color;
+  padding: $image-padding;
+}
+
+@mixin input-field() {
+  border: 1px solid $input-border-color;
+  @include border-radius(3px, 3px);
+  padding: 3px 5px;
+}
+
+@mixin list-chevrons() {
+  list-style-image: url(../img/nav-icon.png);
+  li.active {
+    list-style-image: url(../img/nav-icon-active.png);
+    a {
+      color: $highlight-color;
+    }
+  }
+}
+
+@mixin list-bullets() {
+  list-style-image: url(../img/bullet.png);
+  li.active {
+    list-style-image: url(../img/bullet-active.png);
+    a {
+      color: $highlight-color;
+    }
+  }
+}
+
+@mixin small-font {
+  color: $footer-text-color;
+  font-size: 80%;
+}
+
+@mixin picture-list() {
+  &.first {
+    border-top: $divider-style;
+  }
+  padding: 10px 0 10px 0;
+  clear: both;
+  border-bottom: $divider-style;
+  &:hover {
+    background-color: #eeeeee;
+  }
+  @include clearfix;
+  img {
+    float: left;
+    padding: 2px;
+    border: 1px solid #b5b5b5;
+    margin: 0 20px 0 0;
+  }
+  a {
+    text-decoration: none;
+    display: block;
+    @include clearfix;
+  }
+  h3 {
+    padding-top: rhythm(.5);
+    margin-top: 0;
+    line-height: 1.1em;
+  }
+}
+
+@mixin list-ad() {
+  .ad-wrapper {
+    border-bottom: $divider-style;
+    padding: 10px 0;
+    img {
+      display: block;
+      margin: 0 auto;
+    }
+  }
+}
+
+@mixin publishing-details() {
+  @include small-font;
+  margin: -1em 0 0 0;
+  padding: 2px 0;
+  border-top: $divider-style;
+  border-bottom: $divider-style;
+  a {
+    text-decoration: none;
+    color: $footer-text-color;
+  }
+}
+

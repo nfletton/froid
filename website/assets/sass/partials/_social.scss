@@ -1,0 +1,58 @@
+.social-links {
+  display: block;
+  padding: 30px 0 10px 0;
+  @include breakpoint($break800, $no-query: '.no-mqs') {
+    @include grid-span(4, 20);
+    display: block;
+    text-align: right;
+  }
+  a {
+    font-family: icomoon;
+    font-size: 24px;
+    color: $social-icon-color;
+    text-decoration: none;
+    margin-left: 9px;
+    &:hover {
+      color: $social-icon-active-color;
+    }
+  }
+}
+
+header {
+  .social-links {
+    display: none;
+    text-align: right;
+    @include breakpoint($break690) {
+      @include grid-span(2, 5);
+      display: block;
+    }
+    @include breakpoint($break800, $no-query: '.no-mqs') {
+      @include grid-span(4, 21);
+      display: block;
+    }
+  }
+}
+
+footer {
+  .social-links {
+    text-align: center;
+    padding: 3px 0 0 0;
+  }
+}
+
+
+.like-buttons {
+  clear: both;
+  display: table;
+  padding: 0;
+  width: 100%;
+  margin: 20px auto;
+  @include breakpoint($break690, $no-query: '.no-mqs') {
+    width: 50%;
+  }
+  li {
+    display: table-cell;
+    width: 25%;
+    text-align: center;
+  }
+}

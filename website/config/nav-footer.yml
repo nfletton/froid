@@ -1,0 +1,2 @@
+menu_items:
+- ['nav-home', 'Home', 'index.yml', 'root', True]

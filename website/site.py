@@ -3,20 +3,15 @@ import os
 
 import itertools
 
+from website import app
 from website.menu import Menu
 from website.page import Page
 from website.util import log
 
 
 class Site(object):
-    suffix = '.yml'
 
-    def __init__(self, app):
-        self.config = dict()
-        self.config['content_root'] = os.path.join(app.root_path, u'content')
-        self.config['image_root'] = os.path.join(app.root_path, u'assets', u'images')
-        self.config['config_root'] = os.path.join(app.root_path, u'config')
-        self.config['content_types'] = ['.yml']
+    def __init__(self):
         self._page_cache = {}
         self._url_to_page_index = {}
         self._menu_cache = {}
@@ -27,7 +22,7 @@ class Site(object):
         """
         Load a content file from its content path
         """
-        absolute_pathname = os.path.abspath(os.path.join(self.config['content_root'], content_path))
+        absolute_pathname = os.path.abspath(os.path.join(app.config['CONTENT_ROOT'], content_path))
         mtime = os.path.getmtime(absolute_pathname)
         page, old_mtime = self._page_cache.get(content_path, (None, None))
         if not page or mtime != old_mtime:
@@ -41,9 +36,9 @@ class Site(object):
         return page
 
     def load_menus(self, sender, **extra):
-        for name in os.listdir(self.config['config_root']):
-            if name.endswith(self.suffix) and name.startswith('nav-'):
-                filename = os.path.join(self.config['config_root'], name)
+        for name in os.listdir(app.config['CONFIG_ROOT']):
+            if name.endswith(app.config['CONTENT_EXTENSION']) and name.startswith('nav-'):
+                filename = os.path.join(app.config['CONFIG_ROOT'], name)
                 mtime = os.path.getmtime(filename)
                 menu_uid = os.path.splitext(os.path.basename(filename))[0]
                 cached_menu, old_mtime = self._menu_cache.get(menu_uid, (None, None))
@@ -53,3 +48,21 @@ class Site(object):
                         new_menu = Menu(self)
                         new_menu.load(fd.read())
                         self._menu_cache[menu_uid] = (new_menu, mtime)
+
+    def menu(self, menu_uid):
+        return self._menu_cache[menu_uid][0].root()
+
+    def page_active_trail(self, url):
+        """
+        Generate a set of URL's that are parents (i.e. part of the active menu trail)
+        relative to the given page URL.
+        """
+        # Add the page URL to the trail
+        trail = {url}
+        # Add the URLs of any page that is referenced from an ancestor
+        # menu item in any menu
+        for menu_id, menu in self._menu_cache.items():
+            trail.update(menu[0].parent_page_urls(url))
+            # Add any URLs from hard coded rules
+        # trail.update(self.custom_trail(url))
+        return trail
