@@ -1,7 +1,7 @@
 import io
 import os
 from flask import Flask, render_template, make_response, send_from_directory, abort, url_for
-from flask import request_started
+from flask import request_started, request_tearing_down
 
 import itertools
 import werkzeug
@@ -34,5 +34,5 @@ import website.filter
 # load cached resources on each request if they are outdated
 request_started.connect(site.load_menus, app)
 
-
-
+# flush request error messages after request
+request_tearing_down.connect(site.flush_errors, app)

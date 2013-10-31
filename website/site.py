@@ -6,7 +6,6 @@ import itertools
 from website import app
 from website.menu import Menu
 from website.page import Page
-from website.util import log
 
 
 class Site(object):
@@ -17,6 +16,7 @@ class Site(object):
         self._menu_cache = {}
         self._context_cache = {}
         self._image_cache = {}
+        self._error_log = []
 
     def page(self, content_path):
         """
@@ -27,7 +27,7 @@ class Site(object):
         page, old_mtime = self._page_cache.get(content_path, (None, None))
         if not page or mtime != old_mtime:
             with io.open(absolute_pathname, mode='r') as fd:
-                log('NOTICE', 'Loading page %s' % absolute_pathname)
+                self.log('NOTICE', 'Loading page %s' % absolute_pathname)
                 head = ''.join(itertools.takewhile(unicode.strip, fd))
                 body = fd.read()
             page = Page(head, body, content_path, mtime, self)
@@ -44,7 +44,7 @@ class Site(object):
                 cached_menu, old_mtime = self._menu_cache.get(menu_uid, (None, None))
                 if not cached_menu or mtime != old_mtime:
                     with io.open(filename, mode='r') as fd:
-                        log('NOTICE', 'Loading menu %s' % filename)
+                        self.log('NOTICE', 'Loading menu %s' % filename)
                         new_menu = Menu(self)
                         new_menu.load(fd.read())
                         self._menu_cache[menu_uid] = (new_menu, mtime)
@@ -66,3 +66,16 @@ class Site(object):
             # Add any URLs from hard coded rules
         # trail.update(self.custom_trail(url))
         return trail
+
+    def flush_errors(self, sender, **extra):
+        if self._error_log:
+            print "\n".join(self._error_log)
+            self._error_log = []
+
+    def log(self, mess_type, message):
+        log_message = '%s: %s' % (mess_type, message)
+        if mess_type == 'NOTICE':
+            print(log_message)
+        else:
+            # save error to be flushed at the end of request
+            self._error_log.append(log_message)
