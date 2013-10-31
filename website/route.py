@@ -30,3 +30,10 @@ def raw_files(url_path):
         return send_from_directory(split_path[0], split_path[1])
     else:
         abort(404)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    page = site.page('404.yml')
+    return render_template(page.meta['template'] + '.html',
+                           page=page, site=site), 404

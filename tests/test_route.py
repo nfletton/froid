@@ -53,6 +53,7 @@ class TestRoutingFunctions(unittest.TestCase):
         """
         response = self.app.get('/not-here.html')
         assert response.status_code == 404
+        assert 'Test Page Not Found' in response.data
 
     def test_not_found_subfolder_route(self):
         """
@@ -60,6 +61,7 @@ class TestRoutingFunctions(unittest.TestCase):
         """
         response = self.app.get('/x/y/z/not-here.html')
         assert response.status_code == 404
+        assert 'Test Page Not Found' in response.data
 
     def test_raw_document_route(self):
         """
@@ -81,6 +83,7 @@ class TestRoutingFunctions(unittest.TestCase):
         """
         response = self.app.get('/not-found.txt')
         assert response.status_code == 404
+        assert 'Test Page Not Found' in response.data
 
 if __name__ == '__main__':
     unittest.main()
