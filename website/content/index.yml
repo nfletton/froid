@@ -1,11 +1,11 @@
-title: Wheat-free.org - wheat free recipes, places to eat, suppliers of ingredients
-description: Wheat-free.org specialises in cooking and eating the wheat free way
-keywords: wheat,free,wheat-free,wheat free,allergic,allergies,allergy,intolerance,recipes,recipe,gluten,gluten free,coeliac,celiac,cookies,wheat allergy,gluten allergy,coeliac disease,celiac disease,christmas dinner
-published: 2013-06-05
+title: Froid Static Website Generator
+description: Froid documentation site
+keywords: python, static, website, generator
+published: 2013-11-13
 post_in: []
 id: cyNiS4Ph3
 type: other
 template: index
-heading: Wheat-free.org - wheat free recipes, places to eat, suppliers of ingredients
+heading: Froid Static Website Generator
 
 hello world

@@ -36,13 +36,18 @@ class Menu(object):
     def root(self):
         return self._root
 
-    def parent_page_urls(self, url):
-        urls = []
+    def parent_menu_ids(self, url):
+        """
+        Return all menu item IDs associated with the URL (including parent menu
+        item IDs)
+        """
+        menu_ids = []
+        # get menu items for this URL
         menu_items = self._url_to_menu_item.get(url, [])
         for menu_item in menu_items:
             for parent_menu_item in menu_item.menu_trail():
-                urls.append(parent_menu_item.url)
-        return urls
+                menu_ids.append(parent_menu_item.uid)
+        return menu_ids
 
     def top_level_menu_item(self, url):
         menu_items = self._url_to_menu_item.get(url, [])

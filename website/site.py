@@ -52,20 +52,94 @@ class Site(object):
     def menu(self, menu_uid):
         return self._menu_cache[menu_uid][0].root()
 
-    def page_active_trail(self, url):
+    def active_trail(self, url):
         """
-        Generate a set of URL's that are parents (i.e. part of the active menu trail)
-        relative to the given page URL.
+        Generate a set of menu IDs that are parents (i.e. part of the active
+        menu trail) relative to the given page URL.
         """
-        # Add the page URL to the trail
-        trail = {url}
-        # Add the URLs of any page that is referenced from an ancestor
-        # menu item in any menu
+        trail = set()
         for menu_id, menu in self._menu_cache.items():
-            trail.update(menu[0].parent_page_urls(url))
+            trail.update(menu[0].parent_menu_ids(url))
             # Add any URLs from hard coded rules
         # trail.update(self.custom_trail(url))
         return trail
+
+    def load_contexts(self, sender, **extra):
+        updated = False
+        for name in os.listdir(app.config['CONFIG_ROOT']):
+            if name.endswith(app.config['CONTENT_EXTENSION']) and name.startswith('context-'):
+                filename = os.path.join(app.config['CONFIG_ROOT'], name)
+                mtime = os.path.getmtime(filename)
+                context_uid = os.path.splitext(os.path.basename(filename))[0]
+                cached_context, old_mtime = self._context_cache.get(context_uid, (None, None))
+                if not cached_context or mtime != old_mtime:
+                    with io.open(filename, mode='r') as fd:
+                        log('NOTICE', 'Loading context %s' % filename)
+                        updated = True
+                        self._context_cache[context_uid] = (yaml.load(fd.read()), mtime)
+        if updated:
+            # flush region data in all cached pages as context config has changed
+            for page, mtime in self._page_cache.values():
+                page.flush_regions()
+
+    def region_blocks(self, region, page):
+        """
+        Get the names of the blocks (template names) that are defined in contexts to be
+        displayed in a region of a page.
+        """
+        blocks = []
+        for context in self._context_cache.values():
+            context_data = context[0]
+            if self._exact_context_match(context_data, 'global', True) or \
+                    self._list_exact_context_match(context_data, 'type', page.meta['type']) or \
+                    self._list_partial_context_match(context_data, 'url', page.url()[1:]):
+                if region in context_data:
+                    blocks.extend(context_data[region])
+        return [block[0] for block in sorted(blocks, key=lambda block: block[1])]
+
+    def _exact_context_match(self, context, key, value):
+        """
+        Returns true if the context dictionary contains the key/value pair.
+        """
+        return context.get(key, None) == value
+
+    def _list_exact_context_match(self, context, key, value):
+        """
+        Returns true if the context dictionary contains the key and the sequence
+        value associated with the key contains expected value.
+        """
+        return value in context.get(key, [])
+
+    def _list_partial_context_match(self, context, key, actual):
+        """
+        Returns true if the context dictionary contains the key and the sequence
+        value associated with the key contains a value that starts with the expected value.
+        """
+        for target in context.get(key, []):
+            if actual.startswith(target):
+                return True
+        return False
+
+    def sub_menu(self, menu_uid, url):
+        """
+        Get the sub menu of a page..
+        """
+        menu_based_menu = self._menu_cache[menu_uid][0].sub_menu(url)
+        if menu_based_menu is not None:
+            return menu_based_menu
+        else:
+            page = self._url_to_page_index[url]
+            if page.meta['type'] == 'recipe':
+                return self.sub_menu(menu_uid, '/recipes.html')
+            elif page.meta['type'] == 'review':
+                return self.sub_menu(menu_uid, '/reviews.html')
+            elif page.meta['type'] == 'news':
+                return self.sub_menu(menu_uid, '/news.html')
+            elif page.meta['type'] == 'fact-file':
+                return self.sub_menu(menu_uid, '/food-fact-file.html')
+            elif page.meta['type'] == 'faq':
+                return self.sub_menu(menu_uid, '/faq.html')
+        return None
 
     def flush_errors(self, sender, **extra):
         if self._error_log:

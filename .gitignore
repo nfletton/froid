@@ -4,7 +4,7 @@
 # Froid
 /public
 .sass-cache
-
+/docs
 # Mr Developer
 .mr.developer.cfg
 .project
