@@ -21,6 +21,7 @@ def raw_files():
     for dirpath, dirnames, filenames in os.walk(content_root):
         for filename in filenames:
             if os.path.splitext(filename)[1] != '.yml':
-                file_path = os.path.join(os.path.relpath(dirpath, content_root), filename)
+                file_path = os.path.join(os.path.relpath(dirpath, content_root),
+                                         filename)
                 site.log('NOTICE', 'Freezing ' + file_path)
                 yield {'url_path': file_path}
