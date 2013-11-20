@@ -3,9 +3,9 @@ Froid routes
 """
 
 import os
+import inspect
 
-
-from flask import render_template, abort, send_from_directory
+from flask import render_template, abort, send_from_directory, url_for
 from website import app, site
 
 
@@ -14,7 +14,7 @@ def index():
     """
     Root for website root folder
     """
-    return render_template('index.html', page=site.page('index.yml'), site=site)
+    return render_template('index.html', page=site.page('/index.html'), site=site)
 
 
 @app.route('/<path:url_path>.html')
@@ -22,14 +22,11 @@ def content(url_path):
     """
     Default route for html files.
     """
-    doc_path = os.path.join(app.config['CONTENT_ROOT'], url_path + '.yml')
-    if os.path.isfile(doc_path):
-        page = site.page(url_path + app.config['CONTENT_EXTENSION'])
-        return render_template(page.meta['template'] + '.html',
-                               page=page,
-                               site=site)
-    else:
-        abort(404)
+    url = url_for('content', url_path=url_path)
+    page = site.page(url)
+    return render_template(page.meta['template'] + '.html',
+                           page=page,
+                           site=site)
 
 
 @app.route('/<path:url_path>')
@@ -52,6 +49,6 @@ def page_not_found(_):
     """
     404 page handler
     """
-    page = site.page('404.yml')
+    page = site.page('/404.html')
     return render_template(page.meta['template'] + '.html',
                            page=page, site=site), 404

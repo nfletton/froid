@@ -2,37 +2,40 @@ import io
 import os
 
 import itertools
+from flask import abort
+import yaml
 
 from website import app
 from website.menu import Menu
 from website.page import Page
 
-
 class Site(object):
 
     def __init__(self):
         self._page_cache = {}
-        self._url_to_page_index = {}
         self._menu_cache = {}
         self._context_cache = {}
         self._image_cache = {}
         self._error_log = []
 
-    def page(self, content_path):
+    def page(self, url):
         """
         Load a content file from its content path
         """
-        absolute_pathname = os.path.abspath(os.path.join(app.config['CONTENT_ROOT'], content_path))
-        mtime = os.path.getmtime(absolute_pathname)
-        page, old_mtime = self._page_cache.get(content_path, (None, None))
+        root_path = os.path.splitext(url)[0][1:]
+        absolute_pathname = os.path.abspath(os.path.join(app.config['CONTENT_ROOT'], root_path) + app.config['CONTENT_EXTENSION'])
+        try:
+            mtime = os.path.getmtime(absolute_pathname)
+        except OSError:
+            abort(404)
+        page, old_mtime = self._page_cache.get(url, (None, None))
         if not page or mtime != old_mtime:
             with io.open(absolute_pathname, mode='r') as fd:
                 self.log('NOTICE', 'Loading page %s' % absolute_pathname)
                 head = ''.join(itertools.takewhile(unicode.strip, fd))
                 body = fd.read()
-            page = Page(head, body, content_path, mtime, self)
-            self._page_cache[content_path] = (page, mtime)
-            self._url_to_page_index[page.url()] = page
+            page = Page(head, body, url, mtime, self)
+            self._page_cache[url] = (page, mtime)
         return page
 
     def load_menus(self, sender, **extra):
@@ -74,7 +77,7 @@ class Site(object):
                 cached_context, old_mtime = self._context_cache.get(context_uid, (None, None))
                 if not cached_context or mtime != old_mtime:
                     with io.open(filename, mode='r') as fd:
-                        log('NOTICE', 'Loading context %s' % filename)
+                        self.log('NOTICE', 'Loading context %s' % filename)
                         updated = True
                         self._context_cache[context_uid] = (yaml.load(fd.read()), mtime)
         if updated:
