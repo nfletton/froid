@@ -39,20 +39,23 @@ class TestPageFunctions(unittest.TestCase):
 
     def test_attributes(self):
         """
-        Test accessing attributes in head
+        Test accessing attributes in the YAML header
         """
-        head = "title: Hello World\nkeywords: abc, 1234, xyx"
+        yml_head = "title: Hello World\nkeywords: abc, 1234, xyx\nlist: [1, 2, 3]"
         body = '<h1>Hello World</h2>'
         url = '/one/two/three/hello-world.html'
         modified_time = 23233232
         site = None
-        page = Page(head, body, url, modified_time, site)
+        page = Page(yml_head, body, url, modified_time, site)
         assert page['title'] == 'Hello World'
         assert page['keywords'] == 'abc, 1234, xyx'
+        assert page['list'][0] == 1
+        assert page['list'][1] == 2
+        assert page['list'][2] == 3
 
     def test_non_existent_attributes(self):
         """
-        Test accessin attributes that do not exits
+        Test accessing attributes that do not exits
         """
         head = ''
         body = '<h1>Hello World</h2>'
@@ -60,5 +63,18 @@ class TestPageFunctions(unittest.TestCase):
         modified_time = 23233232
         site = None
         page = Page(head, body, url, modified_time, site)
-        assert page['title'] is None
+        assert page['title'] is ''
+
+    def test_body_classes(self):
+        """
+        Test css classes for the HTML body tag
+        """
+        head = "title: Hello World\nkeywords: abc, 1234, xyx\nlist: [1, 2, 3]" \
+               "\ntemplate: index"
+        body = '<h1>Hello World</h2>'
+        url = '/one/two/three/hello-world.html'
+        modified_time = 23233232
+        site = None
+        page = Page(head, body, url, modified_time, site)
+        assert page.body_classes() == 'index'
 

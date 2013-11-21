@@ -31,24 +31,32 @@ class Page(object):
         return self.__body
 
     def __getitem__(self, name):
-        return self.meta[name] if name in self.meta else None
+        """
+        Get attributes from YAML header.
 
+        From templates these are accessed as: {{ page.title|safe }}
+        """
+        return self.meta[name] if name in self.meta else ''
+
+    # TODO: test
     def menu(self, menu_uid):
         return self._site.menu(menu_uid).children()
 
+    # TODO: test
     def sub_menu(self, menu_uid):
-        menu = self._site.sub_menu(menu_uid, self.url())
+        menu = self._site.sub_menu(menu_uid, self.url)
         if menu is not None:
             menu = menu.children()
         return menu
 
-    def css_classes(self):
+    def body_classes(self):
         """
         Returns the css classes to be attached to the body tag of the page.
         Currently defaults to the name of the page template
         """
-        return self.meta['template']
+        return self['template']
 
+    # TODO: test
     def active_trail(self):
         """
         Returns a list of menu ids that are in the active trail for this page
@@ -57,12 +65,14 @@ class Page(object):
             self._active_trail = self._site.active_trail(self.url())
         return self._active_trail
 
+    # TODO: test
     def blocks(self, region_name):
         """
         Get the block names for a region in the page
         """
         return self.region_blocks.setdefault(region_name, self._site.region_blocks(region_name, self))
 
+    # TODO: test
     def flush_regions(self):
         """
         Flush an cached region block data
