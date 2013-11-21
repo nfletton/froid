@@ -1,34 +1,37 @@
-import os
-
-import werkzeug.utils
-import yaml
 from datetime import datetime
+
+from werkzeug.utils import cached_property
+import yaml
 
 
 class Page(object):
     def __init__(self, head, body, url, modified_time, site):
-        self.head = head
-        self.body = body
+        self.__head = head
+        self.__body = body
         self.url = url
-        self.modified_time = datetime.fromtimestamp(modified_time).isoformat() + '-07:00'
+        self.__modified_time = datetime.fromtimestamp(modified_time).isoformat() + '-07:00'
         self._site = site
         self._active_trail = None
         self.region_blocks = {}
 
-
-    @werkzeug.utils.cached_property
+    @cached_property
     def meta(self):
-        return yaml.safe_load(self.head) or {}
+        """
+        Load the YAML from the head of the content file.
+        """
+        return yaml.safe_load(self.__head) or {}
 
-    @werkzeug.utils.cached_property
+    @cached_property
     def html(self):
-        return self.body
+        """
+        Return the HTML (markdown, ...) content of the page.
+
+        This is where you would apply any content filters such as markdown.
+        """
+        return self.__body
 
     def __getitem__(self, name):
-        if name in self.meta:
-            return self.meta[name]
-        else:
-            return ''
+        return self.meta[name] if name in self.meta else None
 
     def menu(self, menu_uid):
         return self._site.menu(menu_uid).children()

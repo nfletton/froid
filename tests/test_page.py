@@ -24,11 +24,41 @@ class TestPageFunctions(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_constructor(self):
-        head = {'title': 'Hello World'}
+    def test_html(self):
+        """
+        Test html body content
+        """
+        head = "title: 'Hello World'"
         body = '<h1>Hello World</h2>'
         url = '/one/two/three/hello-world.html'
         modified_time = 23233232
         site = None
         page = Page(head, body, url, modified_time, site)
-        assert page.url == '/one/two/three/hello-world.html'
+        assert page['title'] == 'Hello World'
+        assert page.html == '<h1>Hello World</h2>'
+
+    def test_attributes(self):
+        """
+        Test accessing attributes in head
+        """
+        head = "title: Hello World\nkeywords: abc, 1234, xyx"
+        body = '<h1>Hello World</h2>'
+        url = '/one/two/three/hello-world.html'
+        modified_time = 23233232
+        site = None
+        page = Page(head, body, url, modified_time, site)
+        assert page['title'] == 'Hello World'
+        assert page['keywords'] == 'abc, 1234, xyx'
+
+    def test_non_existent_attributes(self):
+        """
+        Test accessin attributes that do not exits
+        """
+        head = ''
+        body = '<h1>Hello World</h2>'
+        url = '/one/two/three/hello-world.html'
+        modified_time = 23233232
+        site = None
+        page = Page(head, body, url, modified_time, site)
+        assert page['title'] is None
+
