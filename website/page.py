@@ -38,9 +38,8 @@ class Page(object):
         """
         return self.meta[name] if name in self.meta else ''
 
-    # TODO: test
-    def menu(self, menu_uid):
-        return self._site.menu(menu_uid).children()
+    # def menu(self, menu_uid):
+    #     return self._site.menu(menu_uid).children()
 
     # TODO: test
     def sub_menu(self, menu_uid):
@@ -56,23 +55,20 @@ class Page(object):
         """
         return self['template']
 
-    # TODO: test
     def active_trail(self):
         """
         Returns a list of menu ids that are in the active trail for this page
         """
         if self._active_trail is None:
-            self._active_trail = self._site.active_trail(self.url())
+            self._active_trail = self._site.active_trail(self.url)
         return self._active_trail
 
-    # TODO: test
     def blocks(self, region_name):
         """
         Get the block names for a region in the page
         """
         return self.region_blocks.setdefault(region_name, self._site.region_blocks(region_name, self))
 
-    # TODO: test
     def flush_regions(self):
         """
         Flush an cached region block data

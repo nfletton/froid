@@ -10,7 +10,7 @@ class Menu(object):
         self._site = site
 
     def add_menu_item(self, uid, title, content_path, parent_uid, visible):
-        url = self._site.page(content_path).url()
+        url = self._site.page(content_path).url
         parent_menu_item = self._menu_item_map[parent_uid]
         new_menu_item = MenuItem(uid, title, url, parent_menu_item, visible)
         parent_menu_item.add_child(new_menu_item)
@@ -38,15 +38,15 @@ class Menu(object):
 
     def parent_menu_ids(self, url):
         """
-        Return all menu item IDs associated with the URL (including parent menu
+        Return a set of all menu item IDs associated with the URL (including parent menu
         item IDs)
         """
-        menu_ids = []
+        menu_ids = set()
         # get menu items for this URL
         menu_items = self._url_to_menu_item.get(url, [])
         for menu_item in menu_items:
             for parent_menu_item in menu_item.menu_trail():
-                menu_ids.append(parent_menu_item.uid)
+                menu_ids.add(parent_menu_item.uid)
         return menu_ids
 
     def top_level_menu_item(self, url):
@@ -73,6 +73,9 @@ class MenuItem(object):
         self._children.append(menu_item)
 
     def children(self):
+        """
+        Return the child menu items of this item.
+        """
         return self._children
 
     def menu_trail(self):

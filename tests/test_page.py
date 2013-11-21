@@ -12,6 +12,7 @@ TEST_DATA_ROOT = os.path.join('tests', 'testdata', 'page')
 os.environ['TEST_DATA_ROOT'] = TEST_DATA_ROOT
 
 from website import app
+from website import site
 
 
 class TestPageFunctions(unittest.TestCase):
@@ -22,7 +23,7 @@ class TestPageFunctions(unittest.TestCase):
         self.app = app.test_client()
 
     def tearDown(self):
-        pass
+        site.clean()
 
     def test_html(self):
         """
@@ -78,3 +79,6 @@ class TestPageFunctions(unittest.TestCase):
         page = Page(head, body, url, modified_time, site)
         assert page.body_classes() == 'index'
 
+
+if __name__ == '__main__':
+    unittest.main()

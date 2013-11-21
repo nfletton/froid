@@ -1,0 +1,6 @@
+title: Test loading of page in subfolder
+keywords: keyword10, keyword20, keyword30, keyword40
+template: page
+heading: Sub Page
+
+<h1>Test loading of subfolder content</h2>

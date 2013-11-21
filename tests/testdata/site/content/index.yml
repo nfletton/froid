@@ -1,0 +1,6 @@
+title: Test loading of index page
+keywords: keyword1, keyword2, keyword3, keyword4
+template: index
+heading: Home Page
+
+<p>Test loading of index page</p>

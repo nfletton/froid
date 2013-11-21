@@ -27,6 +27,7 @@ class Site(object):
         try:
             mtime = os.path.getmtime(absolute_pathname)
         except OSError:
+            self.log('ERROR', 'Page not found: ' + absolute_pathname)
             abort(404)
         page, old_mtime = self._page_cache.get(url, (None, None))
         if not page or mtime != old_mtime:
@@ -52,9 +53,6 @@ class Site(object):
                         new_menu.load(fd.read())
                         self._menu_cache[menu_uid] = (new_menu, mtime)
 
-    def menu(self, menu_uid):
-        return self._menu_cache[menu_uid][0].root()
-
     def active_trail(self, url):
         """
         Generate a set of menu IDs that are parents (i.e. part of the active
@@ -63,8 +61,6 @@ class Site(object):
         trail = set()
         for menu_id, menu in self._menu_cache.items():
             trail.update(menu[0].parent_menu_ids(url))
-            # Add any URLs from hard coded rules
-        # trail.update(self.custom_trail(url))
         return trail
 
     def load_contexts(self, sender, **extra):
@@ -116,12 +112,25 @@ class Site(object):
     def _list_partial_context_match(self, context, key, actual):
         """
         Returns true if the context dictionary contains the key and the sequence
-        value associated with the key contains a value that starts with the expected value.
+        value associated with the key contains a value that starts with the
+        expected value.
         """
         for target in context.get(key, []):
             if actual.startswith(target):
                 return True
         return False
+
+    def menu(self, menu_uid):
+        """
+        Get a menu hierarchy
+        """
+        return self._menu_cache[menu_uid][0].root()
+
+    def top_level_menu_items(self, menu_uid):
+        """
+        return a menus top level menu items
+        """
+        return self._menu_cache[menu_uid][0].root().children()
 
     def sub_menu(self, menu_uid, url):
         """
@@ -143,6 +152,12 @@ class Site(object):
             elif page.meta['type'] == 'faq':
                 return self.sub_menu(menu_uid, '/faq.html')
         return None
+
+    def clean(self):
+        """
+        Used for testing to clean the stored data associated with the site.
+        """
+        self.__init__()
 
     def flush_errors(self, sender, **extra):
         if self._error_log:

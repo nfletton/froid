@@ -10,6 +10,7 @@ TEST_DATA_ROOT = os.path.join('tests', 'testdata', u'simple-routes')
 os.environ['TEST_DATA_ROOT'] = TEST_DATA_ROOT
 
 from website import app
+from website import site
 
 
 class TestRoutingFunctions(unittest.TestCase):
@@ -20,7 +21,7 @@ class TestRoutingFunctions(unittest.TestCase):
         self.app = app.test_client()
 
     def tearDown(self):
-        pass
+        site.clean()
 
     def test_index_route(self):
         """
