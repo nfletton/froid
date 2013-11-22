@@ -65,9 +65,9 @@ class TestSiteFunctions(unittest.TestCase):
         # first load
         site.page('/index.html')
         assert len(site._page_cache) == 1
-        assert '/index.html' in site._page_cache
+        assert 'index.html' in site._page_cache
         # hack content in the cache and check next page load contains the change
-        cached_page = site._page_cache['/index.html'][0]
+        cached_page = site._page_cache['index.html'][0]
         cached_page.html = '<p>new content</p>'
         page = site.page('/index.html')
         assert page.html == '<p>new content</p>'
@@ -79,7 +79,7 @@ class TestSiteFunctions(unittest.TestCase):
         # make a request to force the menus to be loaded
         self.app.get('/index.html')
         # get the active trail for the page
-        active_trail = site.active_trail('/nav-3-2-2.html')
+        active_trail = site.active_trail('nav-3-2-2.html')
         # test IDs in main nav are returned
         assert 'nav-3-2-2' in active_trail
         assert 'nav-3-2' in active_trail

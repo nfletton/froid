@@ -11,4 +11,4 @@
 # LEVEL ONE ITEMS
 #
 menu_items:
-- ['nav-home', 'Home', '/index.html', 'root', True]
+- ['nav-home', 'Home', 'index.html', 'root', True]

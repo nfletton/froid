@@ -20,19 +20,23 @@ class Site(object):
 
     def page(self, url):
         """
-        Load a content file from its content path
+        Load a content file from its URL
         """
-        root_path = os.path.splitext(url)[0][1:]
-        absolute_pathname = os.path.abspath(os.path.join(app.config['CONTENT_ROOT'], root_path) + app.config['CONTENT_EXTENSION'])
+        if url[0] == '/':
+            url = url[1:]
+        content_path = os.path.join(
+            app.config['CONTENT_ROOT'],
+            os.path.splitext(url)[0]) + app.config['CONTENT_EXTENSION']
+        absolute_path = os.path.abspath(content_path)
         try:
-            mtime = os.path.getmtime(absolute_pathname)
+            mtime = os.path.getmtime(absolute_path)
         except OSError:
-            self.log('ERROR', 'Page not found: ' + absolute_pathname)
+            self.log('ERROR', 'Page not found: ' + absolute_path)
             abort(404)
         page, old_mtime = self._page_cache.get(url, (None, None))
         if not page or mtime != old_mtime:
-            with io.open(absolute_pathname, mode='r') as fd:
-                self.log('NOTICE', 'Loading page %s' % absolute_pathname)
+            with io.open(absolute_path, mode='r') as fd:
+                self.log('NOTICE', 'Loading page %s' % absolute_path)
                 head = ''.join(itertools.takewhile(unicode.strip, fd))
                 body = fd.read()
             page = Page(head, body, url, mtime, self)
