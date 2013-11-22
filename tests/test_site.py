@@ -128,6 +128,15 @@ class TestSiteFunctions(unittest.TestCase):
         assert menu_items[3].uid == 'nav-4'
         assert menu_items[4].uid == 'nav-5'
 
+    def test_sub_menu_items(self):
+        # make a request to force the menus to be loaded
+        self.app.get('/index.html')
+        menu_items = site.sub_menu_items('nav-main', 'nav-3.html')
+        assert menu_items[0].uid == 'nav-3-1'
+        assert menu_items[1].uid == 'nav-3-2'
+        assert menu_items[2].uid == 'nav-3-3'
+        assert menu_items[3].uid == 'nav-3-4'
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -136,26 +136,15 @@ class Site(object):
         """
         return self._menu_cache[menu_uid][0].root().children()
 
-    def sub_menu(self, menu_uid, url):
+    def sub_menu_items(self, menu_uid, url):
         """
-        Get the sub menu of a page.
+        Get the sub menu items of a page.
         """
         menu_based_menu = self._menu_cache[menu_uid][0].sub_menu(url)
         if menu_based_menu is not None:
-            return menu_based_menu
+            return menu_based_menu.children()
         else:
-            page = self._url_to_page_index[url]
-            if page.meta['type'] == 'recipe':
-                return self.sub_menu(menu_uid, '/recipes.html')
-            elif page.meta['type'] == 'review':
-                return self.sub_menu(menu_uid, '/reviews.html')
-            elif page.meta['type'] == 'news':
-                return self.sub_menu(menu_uid, '/news.html')
-            elif page.meta['type'] == 'fact-file':
-                return self.sub_menu(menu_uid, '/food-fact-file.html')
-            elif page.meta['type'] == 'faq':
-                return self.sub_menu(menu_uid, '/faq.html')
-        return None
+            return None
 
     def clean(self):
         """

@@ -41,13 +41,6 @@ class Page(object):
     # def menu(self, menu_uid):
     #     return self._site.menu(menu_uid).children()
 
-    # TODO: test
-    def sub_menu(self, menu_uid):
-        menu = self._site.sub_menu(menu_uid, self.url)
-        if menu is not None:
-            menu = menu.children()
-        return menu
-
     def body_classes(self):
         """
         Returns the css classes to be attached to the body tag of the page.
