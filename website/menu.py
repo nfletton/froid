@@ -4,12 +4,12 @@ import yaml
 class Menu(object):
     def __init__(self, site):
         self._menu_item_map = dict()
-        self._root = MenuItem('root', None, None, None, False)
+        self._root = MenuItem('root', None, None, None)
         self._menu_item_map[self._root.uid] = self._root
         self._url_to_menu_item = dict()
         self._site = site
 
-    def add_menu_item(self, uid, title, content_path, parent_uid, visible):
+    def add_menu_item(self, uid, title, content_path, parent_uid):
         """
         Add a menu item to the the existing menu structure.
 
@@ -18,7 +18,7 @@ class Menu(object):
         """
         url = self._site.page(content_path).url
         parent_menu_item = self._menu_item_map[parent_uid]
-        new_menu_item = MenuItem(uid, title, url, parent_menu_item, visible)
+        new_menu_item = MenuItem(uid, title, url, parent_menu_item)
         parent_menu_item.add_child(new_menu_item)
         self._menu_item_map[new_menu_item.uid] = new_menu_item
         self._url_to_menu_item.setdefault(url, []).append(new_menu_item)
@@ -85,13 +85,11 @@ class MenuItem(object):
     """
     Represent a single menu item in a menu structure
     """
-    def __init__(self, uid, title, url, parent, visible):
+    def __init__(self, uid, title, url, parent):
         self.uid = uid
         self.title = title
         self.url = url
         self._parent = parent
-        # todo: decide if visible is of use. It's no currently used.
-        self.visible = visible
         self._children = list()
         self._url = None
 

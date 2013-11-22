@@ -6,9 +6,9 @@
 #  4. The parent of top level menu items in this file should be
 #     set to 'root'
 #
-#- ['<unique_id>', '<title>', '<content_path>', '<parent_id>', <visible>, ]
+#- ['<unique_id>', '<title>', '<content_path>', '<parent_id>']
 #
 # LEVEL ONE ITEMS
 #
 menu_items:
-- ['nav-home', 'Home', 'index.html', 'root', True]
+- ['nav-home', 'Home', 'index.html', 'root']
