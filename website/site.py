@@ -134,7 +134,7 @@ class Site(object):
 
     def sub_menu(self, menu_uid, url):
         """
-        Get the sub menu of a page..
+        Get the sub menu of a page.
         """
         menu_based_menu = self._menu_cache[menu_uid][0].sub_menu(url)
         if menu_based_menu is not None:

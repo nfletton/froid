@@ -117,6 +117,17 @@ class TestSiteFunctions(unittest.TestCase):
         assert menu_hierarchy.children()[2].children()[1].children()[1].uid == 'nav-3-2-2'
         assert menu_hierarchy.children()[2].children()[1].children()[2].uid == 'nav-3-2-3'
 
+    def test_top_level_menu_items(self):
+        # make a request to force the menus to be loaded
+        self.app.get('/index.html')
+        menu_items = site.top_level_menu_items('nav-main')
+        assert len(menu_items) == 5
+        assert menu_items[0].uid == 'nav-1'
+        assert menu_items[1].uid == 'nav-2'
+        assert menu_items[2].uid == 'nav-3'
+        assert menu_items[3].uid == 'nav-4'
+        assert menu_items[4].uid == 'nav-5'
+
 
 if __name__ == '__main__':
     unittest.main()
