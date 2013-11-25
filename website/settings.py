@@ -15,6 +15,9 @@ CONFIG_ROOT = os.path.join(_basedir, 'config')
 CONTENT_EXTENSION = '.yml'
 # the possible extensions used in URLs of generated pages
 URL_EXTENSIONS = ['.html', '.php']
+# unreferenced files for the content endpoint (see routes.py)
+# that Frozen-Flask would otherwise miss.
+UNREFERENCED_FILES = ['404']
 
 FREEZER_DESTINATION = '../public'
 
