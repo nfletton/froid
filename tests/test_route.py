@@ -89,5 +89,17 @@ class TestRoutingFunctions(unittest.TestCase):
         assert response.status_code == 404
         assert 'Test Page Not Found' in response.data
 
+    def test_sitemap_feed(self):
+        """
+        Route to the generated XML sitemap
+        """
+        response = self.app.get('/sitemap.xml')
+        assert response.status_code == 200
+        assert '<?xml version="1.0" encoding="utf-8"?>' in response.data
+        assert 'index.html' in response.data
+        # the 404 page should not be in the sitemap because 404.yml includes
+        # "blocked: ['sitemap']
+        assert '404.html' not in response.data
+
 if __name__ == '__main__':
     unittest.main()

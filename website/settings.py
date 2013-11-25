@@ -11,7 +11,10 @@ STATIC_ROOT = os.path.join(_basedir, 'assets')
 CONTENT_ROOT = os.path.join(_basedir, 'content')
 CONFIG_ROOT = os.path.join(_basedir, 'config')
 
+# the file type used for content files
 CONTENT_EXTENSION = '.yml'
+# the possible extensions used in URLs of generated pages
+URL_EXTENSIONS = ['.html', '.php']
 
 FREEZER_DESTINATION = '../public'
 

@@ -9,6 +9,7 @@ from website import app
 from website.menu import Menu
 from website.page import Page
 
+
 class Site(object):
 
     def __init__(self):
@@ -20,7 +21,7 @@ class Site(object):
 
     def page(self, url):
         """
-        Load a content file from its URL
+        Get a page from its URL
         """
         if url[0] == '/':
             url = url[1:]
@@ -42,6 +43,34 @@ class Site(object):
             page = Page(head, body, url, mtime, self)
             self._page_cache[url] = (page, mtime)
         return page
+
+    def pages(self):
+        """
+        Get all content pages. Primarily used to create sitemaps and
+        news feeds
+
+        It scans the content directory for all YAML files and makes
+        a test request on a number of possible URLs that the YAML
+        file may represent the content for. The first URL that
+        returns a successful response against the Flask test client is
+        used to obtain the corresponding page object.
+        """
+        URL_EXTENSIONS = ['.html', '.php']
+        with app.test_client() as test_client:
+            for (dirpath, dirnames, filenames) in os.walk(app.config['CONTENT_ROOT']):
+                for name in filenames:
+                    if name.endswith(app.config['CONTENT_EXTENSION']):
+                        root_name = os.path.splitext(name)[0]
+                        for extension in app.config['URL_EXTENSIONS']:
+                            rel_path = os.path.relpath(dirpath, app.config['CONTENT_ROOT'])
+                            if rel_path == '.':
+                                candidate_url = '/' + root_name + extension
+                            else:
+                                candidate_url = '/' + rel_path + '/' + root_name + extension
+                            response = test_client.get(candidate_url)
+                            if response.status_code == 200:
+                                yield self.page(candidate_url)
+                                break
 
     def load_menus(self, sender, **extra):
         for name in os.listdir(app.config['CONFIG_ROOT']):

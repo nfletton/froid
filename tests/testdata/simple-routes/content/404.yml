@@ -1,5 +1,6 @@
 title: Test 404 page
 template: index
+block: ['sitemap']
 heading: Page Not Found
 
 Test Page Not Found

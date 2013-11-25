@@ -1,12 +1,12 @@
 """
 Froid routes
 """
-
 import os
-import inspect
 
-from flask import render_template, abort, send_from_directory, url_for
-from website import app, site
+from flask import abort, make_response
+from flask import render_template, send_from_directory, url_for
+
+from website import app, site, util
 
 
 @app.route('/')
@@ -15,6 +15,15 @@ def index():
     Root for website root folder
     """
     return render_template('index.html', page=site.page('/index.html'), site=site)
+
+
+@app.route('/sitemap.xml')
+def sitemap_feed():
+    response = make_response(
+        render_template('sitemap.xml',
+                        pages=util.sort_by('published', site.pages(), True)))
+    response.headers['Content-Type'] = 'application/xml; charset=utf-8'
+    return response
 
 
 @app.route('/<path:url_path>.html')

@@ -11,10 +11,10 @@
   <meta name="keywords" content="{{ page.keywords|safe }}"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="canonical" href="http://{{ config.DOMAIN + page.url }}"/>
+  <link rel="canonical" href="http://{{ config.DOMAIN }}/{{ page.url }}"/>
   <link rel="alternate" type="application/atom+xml"
-        title="wheat-free.org - Blog posts, news and new content"
-        href="http://www.wheat-free.org/wheat-free-news.xml"/>
+        title="{{ config.DOMAIN }}: Blog posts, news and new content"
+        href="http://{{ config.DOMAIN }}/atom.xml"/>
   <link rel="shortcut icon" href="/favicon.ico">
 
   <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,700' rel='stylesheet' type='text/css'>
