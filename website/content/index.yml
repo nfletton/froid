@@ -3,7 +3,7 @@ description: Froid documentation site
 keywords: python, static, website, generator
 published: 2013-11-13
 updated: 2013-11-13
-post_in: []
+post_in: [atom_feed]
 id: cyNiS4Ph3
 type: other
 template: index

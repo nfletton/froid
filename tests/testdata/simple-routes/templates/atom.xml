@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <link href="http://{{ config.DOMAIN }}/atom.xml" rel="self"
+        title="{{ config.DOMAIN }}: news and content"
+        type="application/atom+xml"/>
+  <title>{{ config.SITE_NAME }}</title>
+  <subtitle>Blog posts, news and new content</subtitle>
+  <id>http://{{ config.DOMAIN }}/</id>
+  <updated>2013-05-15T18:32:39Z</updated>
+  {% for page in pages %}
+    <entry>
+      <id>http://{{ config.DOMAIN }}/{{ page.url }}</id>
+      <title>{{ page.heading }}</title>
+      <published>{{ page.published }}T00:00:00-07:00</published>
+      <updated>{{ page.updated }}T00:00:00-07:00</updated>
+      <link href="http://{{ config.DOMAIN }}/{{ page.url }}" rel="alternate"
+            title="{{ page.heading }}"/>
+      <content type="xhtml">
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          {{ page.html|truncate_html(100)|safe }}
+          <p>
+            <a href="http://{{ config.DOMAIN }}/{{ page.url }}">Read more…</a>
+          </p>
+        </div>
+      </content>
+      {% if page.author %}
+        <author>
+          <name>{{ page.author }}</name>
+        </author>
+      {% endif %}
+    </entry>
+  {% endfor %}
+</feed>

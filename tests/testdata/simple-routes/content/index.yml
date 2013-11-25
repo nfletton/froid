@@ -1,4 +1,8 @@
 title: Test routing of index page
+published: 2013-11-22
+updated: 2013-11-25
 template: index
+post_in: [atom_feed]
+author: John Doe
 
 Test route to index page

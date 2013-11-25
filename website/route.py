@@ -26,6 +26,14 @@ def sitemap_feed():
     return response
 
 
+@app.route('/atom.xml')
+def atom_feed():
+    pages = util.sort_by('published', site.pages_by_destination('atom_feed', 'date', 30), True)
+    response = make_response(render_template('atom.xml', pages=pages))
+    response.headers['Content-Type'] = 'application/xml; charset=utf-8'
+    return response
+
+
 @app.route('/<path:url_path>.html')
 def content(url_path):
     """

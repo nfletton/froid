@@ -1,9 +1,10 @@
 import io
 import os
-
-import itertools
-from flask import abort
+from random import shuffle
 import yaml
+import itertools
+
+from flask import abort
 
 from website import app
 from website.menu import Menu
@@ -46,8 +47,7 @@ class Site(object):
 
     def pages(self):
         """
-        Get all content pages. Primarily used to create sitemaps and
-        news feeds
+        Get all content pages. Primarily used to create an XML sitemap.
 
         It scans the content directory for all YAML files and makes
         a test request on a number of possible URLs that the YAML
@@ -55,7 +55,6 @@ class Site(object):
         returns a successful response against the Flask test client is
         used to obtain the corresponding page object.
         """
-        URL_EXTENSIONS = ['.html', '.php']
         with app.test_client() as test_client:
             for (dirpath, dirnames, filenames) in os.walk(app.config['CONTENT_ROOT']):
                 for name in filenames:
@@ -71,6 +70,26 @@ class Site(object):
                             if response.status_code == 200:
                                 yield self.page(candidate_url)
                                 break
+
+    def pages_by_destination(self, destination, sort=None, quantity=30):
+        """
+        Get pages marked for display in a particular destination.
+        Typically used for displaying content in blocks and atom feed.
+        """
+        pages = []
+        for page in self.pages():
+            try:
+                if destination in page.meta['post_in']:
+                    pages.append(page)
+            except KeyError:
+                pass
+        if sort == 'date':
+            pages = sorted(pages, key=lambda page: page.meta['published'], reverse=True)
+        elif sort == 'priority':
+            pages = sorted(pages, key=lambda page: page['priority'])
+        elif sort == 'random':
+            shuffle(pages)
+        return pages[0:quantity]
 
     def load_menus(self, sender, **extra):
         for name in os.listdir(app.config['CONFIG_ROOT']):

@@ -101,5 +101,18 @@ class TestRoutingFunctions(unittest.TestCase):
         # "blocked: ['sitemap']
         assert '404.html' not in response.data
 
+    def test_atom_feed(self):
+        """
+        Route to the generated XML Atom feed
+        """
+        response = self.app.get('/atom.xml')
+        assert response.status_code == 200
+        assert '<feed xmlns="http://www.w3.org/2005/Atom">' in response.data
+        assert 'index.html' in response.data
+        assert '<name>John Doe</name>' in response.data
+        # the 404 page should not be in the sitemap because 404.yml includes
+        # "blocked: ['sitemap']
+        assert '404.html' not in response.data
+
 if __name__ == '__main__':
     unittest.main()
