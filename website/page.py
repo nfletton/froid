@@ -1,14 +1,16 @@
+import os
+
 from datetime import datetime
 
+from flask import url_for
 from werkzeug.utils import cached_property
-import yaml
 
 
 class Page(object):
-    def __init__(self, head, body, url, modified_time, site):
+    def __init__(self, head, body, content_path, modified_time, site):
         self.__head = head
         self.__body = body
-        self.url = url
+        self.__root_path = os.path.splitext(content_path)[0]
         self.__modified_time = datetime.fromtimestamp(modified_time).isoformat() + '-07:00'
         self._site = site
         self._active_trail = None
@@ -19,7 +21,7 @@ class Page(object):
         """
         Load the YAML from the head of the content file.
         """
-        return yaml.safe_load(self.__head) or {}
+        return self.__head or {}
 
     @cached_property
     def html(self):
@@ -29,6 +31,9 @@ class Page(object):
         This is where you would apply any content filters such as markdown.
         """
         return self.__body
+
+    def url(self, **kwargs):
+        return url_for('page', url_path=self.__root_path, **kwargs)
 
     def __getitem__(self, name):
         """
@@ -53,7 +58,7 @@ class Page(object):
         Returns a list of menu ids that are in the active trail for this page
         """
         if self._active_trail is None:
-            self._active_trail = self._site.active_trail(self.url)
+            self._active_trail = self._site.active_trail(self.url())
         return self._active_trail
 
     def blocks(self, region_name):
@@ -67,3 +72,8 @@ class Page(object):
         Flush an cached region block data
         """
         self.region_blocks = {}
+
+
+class BlogList(Page):
+    def url(self, **kwargs):
+        return url_for('blog_list', **kwargs)

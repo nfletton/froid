@@ -5,6 +5,7 @@ import os
 import unittest
 
 from website.page import Page
+from website.site import Site
 
 # Setup global test data location
 TEST_DATA_ROOT = os.path.join('tests', 'testdata', 'page')
@@ -25,6 +26,21 @@ class TestPageFunctions(unittest.TestCase):
     def tearDown(self):
         site.clean()
 
+    def test_page_creation(self):
+        """
+        Test a page gets created based on its 'type' field.
+        """
+        head = "title: 'Hello World'\ntype: Page"
+        body = '<h1>Hello World</h2>'
+        url = '/one/two/three/hello-world.html'
+        modified_time = 23233232
+        site = None
+        page = Site.create_page(head, body, url, modified_time, site)
+        self.assertEquals(Page, type(page))
+        assert page['title'] == 'Hello World'
+        assert page.html == '<h1>Hello World</h2>'
+
+
     def test_html(self):
         """
         Test html body content
@@ -34,7 +50,7 @@ class TestPageFunctions(unittest.TestCase):
         url = '/one/two/three/hello-world.html'
         modified_time = 23233232
         site = None
-        page = Page(head, body, url, modified_time, site)
+        page = Site.create_page(head, body, url, modified_time, site)
         assert page['title'] == 'Hello World'
         assert page.html == '<h1>Hello World</h2>'
 
@@ -47,7 +63,7 @@ class TestPageFunctions(unittest.TestCase):
         url = '/one/two/three/hello-world.html'
         modified_time = 23233232
         site = None
-        page = Page(yml_head, body, url, modified_time, site)
+        page = Site.create_page(yml_head, body, url, modified_time, site)
         assert page['title'] == 'Hello World'
         assert page['keywords'] == 'abc, 1234, xyx'
         assert page['list'][0] == 1
@@ -63,7 +79,7 @@ class TestPageFunctions(unittest.TestCase):
         url = '/one/two/three/hello-world.html'
         modified_time = 23233232
         site = None
-        page = Page(head, body, url, modified_time, site)
+        page = Site.create_page(head, body, url, modified_time, site)
         assert page['title'] is ''
 
     def test_body_classes(self):
@@ -76,7 +92,7 @@ class TestPageFunctions(unittest.TestCase):
         url = '/one/two/three/hello-world.html'
         modified_time = 23233232
         site = None
-        page = Page(head, body, url, modified_time, site)
+        page = Site.create_page(head, body, url, modified_time, site)
         assert page.body_classes() == 'index'
 
 

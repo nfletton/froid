@@ -11,8 +11,8 @@
 # LEVEL ONE ITEMS
 #
 menu_items:
-- ['nav-sec-1', 'Home', 'nav-1.html', 'root']
-- ['nav-sec-2', 'Home', 'nav-2.html', 'root']
-- ['nav-sec-3', 'Home', 'nav-3-2-2.html', 'root']
-- ['nav-sec-4', 'Home', 'nav-4.html', 'root']
-- ['nav-sec-5', 'Home', 'nav-5.html', 'root']
+- ['nav-sec-1', 'Home', '/nav-1.html', 'root']
+- ['nav-sec-2', 'Home', '/nav-2.html', 'root']
+- ['nav-sec-3', 'Home', '/nav-3-2-2.html', 'root']
+- ['nav-sec-4', 'Home', '/nav-4.html', 'root']
+- ['nav-sec-5', 'Home', '/nav-5.html', 'root']

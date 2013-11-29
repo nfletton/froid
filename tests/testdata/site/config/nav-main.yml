@@ -11,20 +11,20 @@
 # LEVEL ONE ITEMS
 #
 menu_items:
-- ['nav-1', 'Home', 'nav-1.html', 'root']
-- ['nav-2', 'Home', 'nav-2.html', 'root']
-- ['nav-3', 'Home', 'nav-3.html', 'root']
-- ['nav-4', 'Home', 'nav-4.html', 'root']
-- ['nav-5', 'Home', 'nav-5.html', 'root']
+- ['nav-1', 'Home', '/nav-1.html', 'root']
+- ['nav-2', 'Home', '/nav-2.html', 'root']
+- ['nav-3', 'Home', '/nav-3.html', 'root']
+- ['nav-4', 'Home', '/nav-4.html', 'root']
+- ['nav-5', 'Home', '/nav-5.html', 'root']
 #
 # sub nav to nav 3
 #
-- ['nav-3-1', 'Home', 'nav-3-1.html', 'nav-3']
-- ['nav-3-2', 'Home', 'nav-3-2.html', 'nav-3']
-- ['nav-3-3', 'Home', 'nav-3-3.html', 'nav-3']
-- ['nav-3-4', 'Home', 'nav-3-4.html', 'nav-3']
+- ['nav-3-1', 'Home', '/nav-3-1.html', 'nav-3']
+- ['nav-3-2', 'Home', '/nav-3-2.html', 'nav-3']
+- ['nav-3-3', 'Home', '/nav-3-3.html', 'nav-3']
+- ['nav-3-4', 'Home', '/nav-3-4.html', 'nav-3']
 #
 # sub sub nav to nav-3-2
-- ['nav-3-2-1', 'Home', 'nav-3-2-1.html', 'nav-3-2']
-- ['nav-3-2-2', 'Home', 'nav-3-2-2.html', 'nav-3-2']
-- ['nav-3-2-3', 'Home', 'nav-3-2-3.html', 'nav-3-2']
+- ['nav-3-2-1', 'Home', '/nav-3-2-1.html', 'nav-3-2']
+- ['nav-3-2-2', 'Home', '/nav-3-2-2.html', 'nav-3-2']
+- ['nav-3-2-3', 'Home', '/nav-3-2-3.html', 'nav-3-2']

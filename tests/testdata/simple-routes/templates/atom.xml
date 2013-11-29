@@ -9,17 +9,17 @@
   <updated>2013-05-15T18:32:39Z</updated>
   {% for page in pages %}
     <entry>
-      <id>http://{{ config.DOMAIN }}/{{ page.url }}</id>
+      <id>http://{{ config.DOMAIN }}/{{ page.url() }}</id>
       <title>{{ page.heading }}</title>
       <published>{{ page.published }}T00:00:00-07:00</published>
       <updated>{{ page.updated }}T00:00:00-07:00</updated>
-      <link href="http://{{ config.DOMAIN }}/{{ page.url }}" rel="alternate"
+      <link href="http://{{ config.DOMAIN }}/{{ page.url() }}" rel="alternate"
             title="{{ page.heading }}"/>
       <content type="xhtml">
         <div xmlns="http://www.w3.org/1999/xhtml">
           {{ page.html|truncate_html(100)|safe }}
           <p>
-            <a href="http://{{ config.DOMAIN }}/{{ page.url }}">Read more…</a>
+            <a href="http://{{ config.DOMAIN }}/{{ page.url() }}">Read more…</a>
           </p>
         </div>
       </content>

@@ -16,7 +16,7 @@ class Menu(object):
         Parent menu items must have been added before their children can be
         added.
         """
-        url = self._site.page(content_path).url
+        url = self._site.page_from_url(content_path).url()
         parent_menu_item = self._menu_item_map[parent_uid]
         new_menu_item = MenuItem(uid, title, url, parent_menu_item)
         parent_menu_item.add_child(new_menu_item)

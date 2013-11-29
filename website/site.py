@@ -1,9 +1,10 @@
+from importlib import import_module
 import io
 import os
 from random import shuffle
-import yaml
 import itertools
 
+import yaml
 from flask import abort
 
 from website import app
@@ -12,7 +13,6 @@ from website.page import Page
 
 
 class Site(object):
-
     def __init__(self):
         self._page_cache = {}
         self._menu_cache = {}
@@ -20,56 +20,69 @@ class Site(object):
         self._image_cache = {}
         self._error_log = []
 
-    def page(self, url):
+    def page_from_url(self, url):
         """
-        Get a page from its URL
+        Get a page from its URL.
         """
         if url[0] == '/':
             url = url[1:]
-        content_path = os.path.join(
-            app.config['CONTENT_ROOT'],
-            os.path.splitext(url)[0]) + app.config['CONTENT_EXTENSION']
-        absolute_path = os.path.abspath(content_path)
+        content_path = os.path.splitext(url)[0] + app.config[
+            'CONTENT_EXTENSION']
+        return self.page_from_path(content_path)
+
+    def page_from_path(self, content_path):
+        """
+        Get a page from its relative content path.
+        """
+        absolute_path = os.path.abspath(
+            os.path.join(app.config['CONTENT_ROOT'], content_path))
         try:
             mtime = os.path.getmtime(absolute_path)
         except OSError:
             self.log('ERROR', 'Page not found: ' + absolute_path)
             abort(404)
-        page, old_mtime = self._page_cache.get(url, (None, None))
+        page, old_mtime = self._page_cache.get(content_path, (None, None))
         if not page or mtime != old_mtime:
             with io.open(absolute_path, mode='r') as fd:
                 self.log('NOTICE', 'Loading page %s' % absolute_path)
                 head = ''.join(itertools.takewhile(unicode.strip, fd))
                 body = fd.read()
-            page = Page(head, body, url, mtime, self)
-            self._page_cache[url] = (page, mtime)
+            page = self.create_page(head, body, content_path, mtime, self)
+            self._page_cache[content_path] = (page, mtime)
         return page
+
+    @staticmethod
+    def create_page(head, body, content_path, modified_time, site):
+        """
+        Factory method to create pages.
+
+        By default create a page withe the class Page. If page YAML
+        contains a 'type' attribute, then try to create a class
+        of 'type' specified. If no such class exists, fallback to
+        the Page class.
+        """
+        head_data = yaml.safe_load(head)
+        if head_data and 'type' in head_data:
+            try:
+                module = import_module('website.page')
+                class_ = getattr(module, head_data['type'])
+                return class_(head_data, body, content_path, modified_time,
+                              site)
+            except AttributeError:
+                pass
+        return Page(head_data, body, content_path, modified_time, site)
 
     def pages(self):
         """
-        Get all content pages. Primarily used to create an XML sitemap.
-
-        It scans the content directory for all YAML files and makes
-        a test request on a number of possible URLs that the YAML
-        file may represent the content for. The first URL that
-        returns a successful response against the Flask test client is
-        used to obtain the corresponding page object.
+        Get all content pages.
         """
-        with app.test_client() as test_client:
-            for (dirpath, dirnames, filenames) in os.walk(app.config['CONTENT_ROOT']):
-                for name in filenames:
-                    if name.endswith(app.config['CONTENT_EXTENSION']):
-                        root_name = os.path.splitext(name)[0]
-                        for extension in app.config['URL_EXTENSIONS']:
-                            rel_path = os.path.relpath(dirpath, app.config['CONTENT_ROOT'])
-                            if rel_path == '.':
-                                candidate_url = '/' + root_name + extension
-                            else:
-                                candidate_url = '/' + rel_path + '/' + root_name + extension
-                            response = test_client.get(candidate_url)
-                            if response.status_code == 200:
-                                yield self.page(candidate_url)
-                                break
+        for (dirpath, dirnames, filenames) in os.walk(
+                app.config['CONTENT_ROOT']):
+            for name in filenames:
+                if name.endswith(app.config['CONTENT_EXTENSION']):
+                    yield self.page_from_path(
+                        os.path.relpath(os.path.join(dirpath, name),
+                                        app.config['CONTENT_ROOT']))
 
     def pages_by_destination(self, destination, sort=None, quantity=30):
         """
@@ -84,20 +97,35 @@ class Site(object):
             except KeyError:
                 pass
         if sort == 'date':
-            pages = sorted(pages, key=lambda page: page.meta['published'], reverse=True)
+            pages = sorted(pages, key=lambda page: page.meta['published'],
+                           reverse=True)
         elif sort == 'priority':
             pages = sorted(pages, key=lambda page: page['priority'])
         elif sort == 'random':
             shuffle(pages)
         return pages[0:quantity]
 
+    def pages_by_type(self, page_type):
+        """
+        Get all pages of a given type
+        """
+        for page in self.pages():
+            try:
+                if page_type == page.meta['type']:
+                    yield page
+            except KeyError:
+                pass
+
     def load_menus(self, sender, **extra):
         for name in os.listdir(app.config['CONFIG_ROOT']):
-            if name.endswith(app.config['CONTENT_EXTENSION']) and name.startswith('nav-'):
+            if name.endswith(
+                    app.config['CONTENT_EXTENSION']) and name.startswith(
+                    'nav-'):
                 filename = os.path.join(app.config['CONFIG_ROOT'], name)
                 mtime = os.path.getmtime(filename)
                 menu_uid = os.path.splitext(os.path.basename(filename))[0]
-                cached_menu, old_mtime = self._menu_cache.get(menu_uid, (None, None))
+                cached_menu, old_mtime = self._menu_cache.get(menu_uid,
+                                                              (None, None))
                 if not cached_menu or mtime != old_mtime:
                     with io.open(filename, mode='r') as fd:
                         self.log('NOTICE', 'Loading menu %s' % filename)
@@ -118,16 +146,21 @@ class Site(object):
     def load_contexts(self, sender, **extra):
         updated = False
         for name in os.listdir(app.config['CONFIG_ROOT']):
-            if name.endswith(app.config['CONTENT_EXTENSION']) and name.startswith('context-'):
+            if name.endswith(
+                    app.config['CONTENT_EXTENSION']) and name.startswith(
+                    'context-'):
                 filename = os.path.join(app.config['CONFIG_ROOT'], name)
                 mtime = os.path.getmtime(filename)
                 context_uid = os.path.splitext(os.path.basename(filename))[0]
-                cached_context, old_mtime = self._context_cache.get(context_uid, (None, None))
+                cached_context, old_mtime = self._context_cache.get(context_uid,
+                                                                    (
+                                                                    None, None))
                 if not cached_context or mtime != old_mtime:
                     with io.open(filename, mode='r') as fd:
                         self.log('NOTICE', 'Loading context %s' % filename)
                         updated = True
-                        self._context_cache[context_uid] = (yaml.load(fd.read()), mtime)
+                        self._context_cache[context_uid] = (
+                        yaml.load(fd.read()), mtime)
         if updated:
             # flush region data in all cached pages as context config has changed
             for page, mtime in self._page_cache.values():
@@ -142,11 +175,14 @@ class Site(object):
         for context in self._context_cache.values():
             context_data = context[0]
             if self._exact_context_match(context_data, 'global', True) or \
-                    self._list_exact_context_match(context_data, 'type', page.meta['type']) or \
-                    self._list_partial_context_match(context_data, 'url', page.url()[1:]):
+                    self._list_exact_context_match(context_data, 'type',
+                                                   page.meta['type']) or \
+                    self._list_partial_context_match(context_data, 'url',
+                                                     page.url()[1:]):
                 if region in context_data:
                     blocks.extend(context_data[region])
-        return [block[0] for block in sorted(blocks, key=lambda block: block[1])]
+        return [block[0] for block in
+                sorted(blocks, key=lambda block: block[1])]
 
     def _exact_context_match(self, context, key, value):
         """

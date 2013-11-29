@@ -30,7 +30,7 @@ class TestSiteFunctions(unittest.TestCase):
         """
         Load the site index page
         """
-        page = site.page('/index.html')
+        page = site.page_from_url('/index.html')
         assert page['title'] == 'Test loading of index page'
         assert page['keywords'] == 'keyword1, keyword2, keyword3, keyword4'
         assert page['template'] == 'index'
@@ -41,7 +41,7 @@ class TestSiteFunctions(unittest.TestCase):
         """
         Load a page in a sub directory
         """
-        page = site.page('/subfolder/nested-content.html')
+        page = site.page_from_url('/subfolder/nested-content.html')
         assert page['title'] == 'Test loading of page in subfolder'
         assert page['keywords'] == 'keyword10, keyword20, keyword30, keyword40'
         assert page['template'] == 'page'
@@ -53,7 +53,7 @@ class TestSiteFunctions(unittest.TestCase):
         Attempt to load a page that does not exist
         """
         try:
-            site.page('/does-not-exist.html')
+            site.page_from_url('/does-not-exist.html')
             assert False
         except NotFound:
             assert True
@@ -63,13 +63,13 @@ class TestSiteFunctions(unittest.TestCase):
         Test page loaded from page cache on second load
         """
         # first load
-        site.page('/index.html')
+        site.page_from_url('/index.html')
         assert len(site._page_cache) == 1
-        assert 'index.html' in site._page_cache
+        assert 'index.yml' in site._page_cache
         # hack content in the cache and check next page load contains the change
-        cached_page = site._page_cache['index.html'][0]
+        cached_page = site._page_cache['index.yml'][0]
         cached_page.html = '<p>new content</p>'
-        page = site.page('/index.html')
+        page = site.page_from_url('/index.html')
         assert page.html == '<p>new content</p>'
 
     def test_active_trail(self):
@@ -79,7 +79,7 @@ class TestSiteFunctions(unittest.TestCase):
         # make a request to force the menus to be loaded
         self.app.get('/index.html')
         # get the active trail for the page
-        active_trail = site.active_trail('nav-3-2-2.html')
+        active_trail = site.active_trail('/nav-3-2-2.html')
         # test IDs in main nav are returned
         assert 'nav-3-2-2' in active_trail
         assert 'nav-3-2' in active_trail
@@ -131,7 +131,7 @@ class TestSiteFunctions(unittest.TestCase):
     def test_sub_menu_items(self):
         # make a request to force the menus to be loaded
         self.app.get('/index.html')
-        menu_items = site.sub_menu_items('nav-main', 'nav-3.html')
+        menu_items = site.sub_menu_items('nav-main', '/nav-3.html')
         assert menu_items[0].uid == 'nav-3-1'
         assert menu_items[1].uid == 'nav-3-2'
         assert menu_items[2].uid == 'nav-3-3'

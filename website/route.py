@@ -14,7 +14,7 @@ def index():
     """
     Root for website root folder
     """
-    return render_template('index.html', page=site.page('/index.html'), site=site)
+    return render_template('index.html', page=site.page_from_url('/index.html'), site=site)
 
 
 @app.route('/sitemap.xml')
@@ -35,12 +35,12 @@ def atom_feed():
 
 
 @app.route('/<path:url_path>.html')
-def content(url_path):
+def page(url_path):
     """
-    Default route for html files.
+    Default route for basic content files.
     """
-    url = url_for('content', url_path=url_path)
-    page = site.page(url)
+    url = url_for('page', url_path=url_path)
+    page = site.page_from_url(url)
     return render_template(page.meta['template'] + '.html',
                            page=page,
                            site=site)
@@ -66,6 +66,6 @@ def page_not_found(_):
     """
     404 page handler
     """
-    page = site.page('/404.html')
+    page = site.page_from_url('/404.html')
     return render_template(page.meta['template'] + '.html',
                            page=page, site=site), 404
