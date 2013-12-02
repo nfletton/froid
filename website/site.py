@@ -13,6 +13,7 @@ from website.page import Page
 
 
 class Site(object):
+
     def __init__(self):
         self._page_cache = {}
         self._menu_cache = {}
@@ -26,16 +27,21 @@ class Site(object):
         """
         if url[0] == '/':
             url = url[1:]
-        content_path = os.path.splitext(url)[0] + app.config[
-            'CONTENT_EXTENSION']
-        return self.page_from_path(content_path)
+        content_root_path = os.path.splitext(url)[0]
+        for extension in app.config['CONTENT_EXTENSIONS']:
+            candidate_path = content_root_path +  extension
+            absolute_path = os.path.abspath(
+                os.path.join(app.config['CONTENT_ROOT'], candidate_path))
+            if os.path.isfile(absolute_path):
+                return self.page_from_path(candidate_path)
+        abort(404)
 
     def page_from_path(self, content_path):
         """
         Get a page from its relative content path.
         """
-        absolute_path = os.path.abspath(
-            os.path.join(app.config['CONTENT_ROOT'], content_path))
+        absolute_path = os.path.abspath(os.path.join(app.config['CONTENT_ROOT'],
+                                                     content_path))
         try:
             mtime = os.path.getmtime(absolute_path)
         except OSError:
@@ -79,7 +85,8 @@ class Site(object):
         for (dirpath, dirnames, filenames) in os.walk(
                 app.config['CONTENT_ROOT']):
             for name in filenames:
-                if name.endswith(app.config['CONTENT_EXTENSION']):
+                extension = os.path.splitext(name)[1]
+                if extension in app.config['CONTENT_EXTENSIONS']:
                     yield self.page_from_path(
                         os.path.relpath(os.path.join(dirpath, name),
                                         app.config['CONTENT_ROOT']))
@@ -118,9 +125,7 @@ class Site(object):
 
     def load_menus(self, sender, **extra):
         for name in os.listdir(app.config['CONFIG_ROOT']):
-            if name.endswith(
-                    app.config['CONTENT_EXTENSION']) and name.startswith(
-                    'nav-'):
+            if name.endswith('.yml') and name.startswith('nav-'):
                 filename = os.path.join(app.config['CONFIG_ROOT'], name)
                 mtime = os.path.getmtime(filename)
                 menu_uid = os.path.splitext(os.path.basename(filename))[0]
@@ -146,9 +151,7 @@ class Site(object):
     def load_contexts(self, sender, **extra):
         updated = False
         for name in os.listdir(app.config['CONFIG_ROOT']):
-            if name.endswith(
-                    app.config['CONTENT_EXTENSION']) and name.startswith(
-                    'context-'):
+            if name.endswith('.yml') and name.startswith('context-'):
                 filename = os.path.join(app.config['CONFIG_ROOT'], name)
                 mtime = os.path.getmtime(filename)
                 context_uid = os.path.splitext(os.path.basename(filename))[0]
@@ -162,14 +165,15 @@ class Site(object):
                         self._context_cache[context_uid] = (
                         yaml.load(fd.read()), mtime)
         if updated:
-            # flush region data in all cached pages as context config has changed
+            # flush region data in all cached pages as context config
+            # has changed
             for page, mtime in self._page_cache.values():
                 page.flush_regions()
 
     def region_blocks(self, region, page):
         """
-        Get the names of the blocks (template names) that are defined in contexts to be
-        displayed in a region of a page.
+        Get the names of the blocks (template names) that are defined in
+        contexts to be displayed in a region of a page.
         """
         blocks = []
         for context in self._context_cache.values():
@@ -192,16 +196,16 @@ class Site(object):
 
     def _list_exact_context_match(self, context, key, value):
         """
-        Returns true if the context dictionary contains the key and the sequence
-        value associated with the key contains expected value.
+        Returns true if the context dictionary contains the key and
+        the sequence value associated with the key contains expected value.
         """
         return value in context.get(key, [])
 
     def _list_partial_context_match(self, context, key, actual):
         """
-        Returns true if the context dictionary contains the key and the sequence
-        value associated with the key contains a value that starts with the
-        expected value.
+        Returns true if the context dictionary contains the key and
+        the sequence value associated with the key contains a value that
+         starts with the expected value.
         """
         for target in context.get(key, []):
             if actual.startswith(target):

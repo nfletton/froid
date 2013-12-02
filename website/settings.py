@@ -11,8 +11,8 @@ STATIC_ROOT = os.path.join(_basedir, 'assets')
 CONTENT_ROOT = os.path.join(_basedir, 'content')
 CONFIG_ROOT = os.path.join(_basedir, 'config')
 
-# the file type used for content files
-CONTENT_EXTENSION = '.yml'
+# the file types used for content files
+CONTENT_EXTENSIONS = ['.yml', '.rst']
 # the possible extensions used in URLs of generated pages
 URL_EXTENSIONS = ['.html', '.php']
 # unreferenced files for the content endpoint (see routes.py)
