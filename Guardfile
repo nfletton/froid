@@ -20,5 +20,5 @@ guard 'compass', :project_path => 'website/assets', :configuration_file => 'webs
 # guard :compass
 
 guard 'livereload' do
-  watch(%r{website.+\.(css|html|js|yml|py|php)$})
+  watch(%r{website.+\.(css|html|js|yml|py|php|rst|md)$})
 end
