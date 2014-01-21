@@ -22,7 +22,7 @@ def raw_files():
 
 
 @freezer.register_generator
-def content():
+def page():
     # freeze unreferenced pages
     for file in app.config['UNREFERENCED_FILES']:
         yield {'url_path': file}
