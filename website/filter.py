@@ -11,4 +11,4 @@ def truncate_html(html, length=4000):
     """
     Cleanly truncate a chunk of html
     """
-    return unicode(BeautifulSoup(html[:length], "html.parser"))
+    return unicode(BeautifulSoup(html[:length], "lxml"))[12:][:-14]
