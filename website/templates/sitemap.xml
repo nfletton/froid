@@ -3,7 +3,7 @@
   {% for page in pages %}
     {% if 'sitemap' not in page.block %}
       <url>
-        <loc>http://{{ config.DOMAIN }}/{{ page.url }}</loc>
+        <loc>http://{{ config.DOMAIN }}{{ page.url() }}</loc>
         <lastmod>{{ page.updated }}</lastmod>
       </url>
     {% endif %}
